@@ -28,7 +28,6 @@ sol! {
         address who,
         bytes calldata label,
         bytes calldata initialization,
-        bytes calldata erc721Data,
         address implementation
     ) external returns (
         address tba
@@ -69,12 +68,12 @@ sol! {
 }
 
 const FAKE_KIMAP_ADDRESS: &str = "0xEce71a05B36CA55B895427cD9a440eEF7Cf3669D";
-const REAL_KIMAP_ADDRESS: &str = "0xcA92476B2483aBD5D82AEBF0b56701Bb2e9be658";
+const REAL_KIMAP_ADDRESS: &str = "0x000000000033e5CCbC52Ec7BDa87dB768f9aA93F";
 
 const FAKE_KINO_ACCOUNT_IMPL: &str = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
-const REAL_KINO_ACCOUNT_IMPL: &str = "0x38766C70a4FB2f23137D9251a1aA12b1143fC716";
+const REAL_KINO_ACCOUNT_IMPL: &str = "0x83119A31628F2c19f578b0CAC9A43eAbA8d8512b";
 
-const REAL_CHAIN_ID: u64 = 10;
+const REAL_CHAIN_ID: u64 = 8453;
 const FAKE_CHAIN_ID: u64 = 31337;
 
 const MULTICALL_ADDRESS: &str = "0xcA11bde05977b3631167028862bE2a173976CA11";
@@ -288,7 +287,6 @@ async fn prepare_kimap_put(
             who: wallet_address,
             label: name.into(),
             initialization: multicall.into(),
-            erc721Data: Bytes::default(),
             implementation: kino_account_impl,
         }
         .abi_encode();
@@ -419,7 +417,7 @@ pub async fn execute(
     let tx = provider.send_raw_transaction(&tx_encoded).await?;
     let tx_hash = format!("{:?}", tx.tx_hash());
     let link = make_remote_link(
-        &format!("https://optimistic.etherscan.io/tx/{tx_hash}"),
+        &format!("https://basescan.org/tx/{tx_hash}"),
         &tx_hash,
     );
     info!(

@@ -37,6 +37,13 @@ struct Commit {
     sha: String,
 }
 
+fn parse_u64_with_underscores(s: &str) -> Result<u64, &'static str> {
+    let clean_string = s.replace('_', "");
+    clean_string
+        .parse::<u64>()
+        .map_err(|_| "Invalid number format")
+}
+
 fn parse_u128_with_underscores(s: &str) -> Result<u128, &'static str> {
     let clean_string = s.replace('_', "");
     clean_string
@@ -1019,20 +1026,20 @@ async fn make_app(current_dir: &std::ffi::OsString) -> Result<Command> {
             .visible_alias("n")
             .arg(Arg::new("DIR")
                 .action(ArgAction::Set)
-                .help("Path to create template directory at (must contain only a-z, A-Z, 0-9, `-`)")
+                .help("Path to create template directory at (must contain only a-z, 0-9, `-`)")
                 .required(true)
             )
             .arg(Arg::new("PACKAGE")
                 .action(ArgAction::Set)
                 .short('a')
                 .long("package")
-                .help("Name of the package (must contain only a-z, A-Z, 0-9, `-`) [default: DIR]")
+                .help("Name of the package (must contain only a-z, 0-9, `-`) [default: DIR]")
             )
             .arg(Arg::new("PUBLISHER")
                 .action(ArgAction::Set)
                 .short('u')
                 .long("publisher")
-                .help("Name of the publisher (must contain only a-z, A-Z, 0-9, `-`, `.`)")
+                .help("Name of the publisher (must contain only a-z, 0-9, `-`, `.`)")
                 .default_value("template.os")
             )
             .arg(Arg::new("LANGUAGE")
@@ -1120,7 +1127,7 @@ async fn make_app(current_dir: &std::ffi::OsString) -> Result<Command> {
                 .long("gas-limit")
                 .help("The ETH transaction gas limit")
                 .default_value("1_000_000")
-                .value_parser(clap::builder::ValueParser::new(parse_u128_with_underscores))
+                .value_parser(clap::builder::ValueParser::new(parse_u64_with_underscores))
                 .required(false)
             )
             .arg(Arg::new("MAX_PRIORITY_FEE_PER_GAS")
